@@ -1,40 +1,29 @@
 <?php
-    require "database.php";
+    require 'database.php';
+    require 'services/user_service.php';
 
-    if (isset($_POST["add_user"])){ // if this variable is  exist.
-        $name = $_POST['nom'];
-        $prenom = $_POST['prenom'];
-        $email = $_POST['email'];
-        $insert = "INSERT into utilisateur (nom,prenom,email)
-                               values ('$name','$prenom','$email')";
-        
-        $result = mysqli_query($conn,$insert); //mysqli_query exuction de query.
+// insertion ou bien l'ajout des ressource .
+    if(isset($_POST["ajouter_ressource"])){
+        $titel = $_POST['title'];
+        $desc = $_POST['description'];
+        $user_id = $_POST['user_id'];
+        $query = "INSERT INTO resources (`title`, `description`, `user_id`)
+                              values ('$titel', '$desc', '$user_id')";
+        $result = mysqli_query($conn,$query);
         if($result){
-            echo "data is inserted successfuly";
-        }else{
-            die("Connection failed: " . $conn->connect_error);
-        }
+            echo "ressource is inserted successfuly";
+        }else {
+            die('connection.failed :' .$conn->connect_error);
+        }                       
     }
-    if(isset($_GET["id_user"])){
-        $id=$_GET["id_user"];
-        $sql="DELETE from utilisateur where user_id=$id";
+// la suppression d'un ressources
+
+    if(isset($_GET['resource_id'])){
+        $id = $_GET['resource_id'];
+        $sql = "DELETE from resources WHERE resource_id = $id";
         $result = mysqli_query($conn,$sql);
     }
-    if (isset($_POST["update_user"])){
-        $id = $_POST['id'];
-        $name = $_POST['nom'];
-        $prenom = $_POST['prenom'];
-        $email = $_POST['email'];
-        $insert = "UPDATE  utilisateur set nom='$name', prenom='$prenom', email='$email'
-        where  user_id=$id";
-        
-        $result = mysqli_query($conn,$insert);
-        if($result){
-            echo "data is inserted successfuly";
-        }else{
-            die("Connection failed: " . $conn->connect_error);
-        }
-    }
+
     
 ?>
 
@@ -129,19 +118,19 @@
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
                         <li>
-                            <a href="Utilisateur.html">
+                            <a href="Utilisateur.php">
                                 <i class="fas fa-chart-bar"></i>UTILISATEUR</a>
                         </li>
                         <li class="active">
-                            <a href="ressources.html">
+                            <a href="ressources.php">
                                 <i class="fas fa-table"></i>RESSOURCES</a>
                         </li>
                         <li>
-                            <a href="categories.htm">
+                            <a href="categories.php">
                                 <i class="far fa-check-square"></i>CATEGORIES</a>
                         </li>
                         <li>
-                            <a href="subcategories.html">
+                            <a href="subcategories.php">
                                 <i class="fas fa-calendar-alt"></i>SUBCATEGORIS</a>
                         </li>
                     </ul>
@@ -349,7 +338,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <!-- DATA TABLE -->
-                                <h3 class="title-5 m-b-35">USERS(50)</h3>
+                                <h3 class="title-5 m-b-35">Ressours(50)</h3>
                                 <div class="table-data__tool">
                                     <div class="table-data__tool-left">
                                         <div class="rs-select2--light rs-select2--md">
@@ -395,20 +384,19 @@
                                                         <span class="au-checkmark"></span>
                                                     </label>
                                                 </th>
-                                                <th>Id_user</th>
-                                                <th>nom</th>
-                                                <th>prenom</th>
-                                                <th>email</th>
-                                                <th></th>
+                                                <th>resource_id</th>
+                                                <th>Titel</th>
+                                                <th>Description</th>
+                                                <th>user_id</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $select = "SELECT * FROM utilisateur";
+                                            $select = "SELECT * FROM resources";
                                             $result = mysqli_query($conn,$select);
                                             if($result){
                                                 while($row = mysqli_fetch_assoc($result)){
-                                                    $id = $row['user_id'];
+                                                    $id = $row['resource_id'];
                                                     ?>
                                               
                                             <tr class="tr-shadow">
@@ -418,12 +406,12 @@
                                                         <span class="au-checkmark"></span>
                                                     </label>
                                                 </td>
-                                                <td><?php echo  $row['user_id'] ?></td>
-                                                <td><?php echo  $row['nom'] ?></td>
+                                                <td><?php echo  $row['resource_id'] ?></td>
+                                                <td><?php echo  $row['title'] ?></td>
                                                 <td>
-                                                    <?php echo  $row['prenom'] ?>
+                                                    <?php echo  $row['description'] ?>
                                                 </td>
-                                                <td class="desc"> <?php echo  $row['email'] ?></td>
+                                                <td class="desc"> <?php echo  $row['user_id'] ?></td>
                                                 <td>
                                                     <div class="table-data-feature">
                                                         <button data-bs-toggle="modal" 
@@ -451,7 +439,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="copyright container" style="bottom: 0; right: 0;">
-                                    <p>Copyright © 2023 Myressources. All rights reserved. Template by <a href="Utilisateur.php">Myressources</a>.</p>
+                                    <p>Copyright © 2023 Myressources. All rights reserved. Template by <a href="ressources.php">Myressources</a>.</p>
                                 </div>
                             </div>
                         </div>
@@ -462,37 +450,37 @@
 
     </div>
     <?php
-    $select = "SELECT * FROM utilisateur";
+    $select = "SELECT * FROM resources";
     $result = mysqli_query($conn,$select);
     if($result){
         while($row = mysqli_fetch_assoc($result)){
-            $id = $row['user_id']; 
+            $id = $row['jouter_ressource']; 
     ?>
 <div class="modal fade" id="exampleModal<?=$id?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">New resource</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form method="post">
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">NOM:</label>
-            <input type="text" name="nom" class="form-control" value="<?=$row['nom']?>" id="recipient-name">
+            <label for="recipient-name" class="col-form-label">Titel:</label>
+            <input type="text" name="titel" class="form-control" value="<?=$row['title']?>" id="recipient-name">
           </div>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">PRENOM:</label>
-            <input type="text" name="prenom" class="form-control" value="<?=$row['prenom']?>" id="recipient-name">
+            <label for="recipient-name" class="col-form-label">DEscription:</label>
+            <input type="text" name="description" class="form-control" value="<?=$row['description']?>" id="recipient-name">
           </div>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">EMAIL:</label>
-            <input type="text" name ="email" class="form-control" value="<?=$row['email']?>" id="recipient-name">
+            <label for="recipient-name" class="col-form-label">User_id:</label>
+            <input type="text" name ="user_id" class="form-control" value="<?=$row['user_id']?>" id="recipient-name">
           </div>
           <input type="hidden" value="<?=$id?>" name ="id" >
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" name ="update_user" class="btn btn-primary">update</button>
+            <button type="submit" name ="update_user" class="btn btn-primary">Ajouter</button>
           </div>
         </form>
       </div>
@@ -509,26 +497,37 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">New resource</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form method="post">
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">NOM:</label>
-            <input type="text" name="nom" class="form-control" id="recipient-name">
+            <label for="recipient-name" class="col-form-label">Titel:</label>
+            <input type="text" name="title" class="form-control" id="recipient-name">
           </div>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">PRENOM:</label>
-            <input type="text" name="prenom" class="form-control" id="recipient-name">
+            <label for="recipient-name" class="col-form-label">Description:</label>
+            <input type="text" name="description" class="form-control" id="recipient-name">
           </div>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">EMAIL:</label>
-            <input type="text" name ="email" class="form-control" id="recipient-name">
+            <label for="recipient-name" class="col-form-label">User:</label>
+            <select class="form-control" name="user_id" id="recipient-name" require>
+            <option value=null selected> Select user</option>
+                <?php
+                    $users = get_all_users();
+
+                    foreach($users as $user){
+                ?>
+                        <option value="<?=$user['user_id'] ?>"> <?php echo $user['nom'] . ' ' . $user['prenom'] ?> </option>
+                <?php
+                    }
+                ?>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" name ="add_user" class="btn btn-primary">Ajouter</button>
+            <button type="submit" name ="ajouter_ressource" class="btn btn-primary">Ajouter</button>
           </div>
         </form>
       </div>

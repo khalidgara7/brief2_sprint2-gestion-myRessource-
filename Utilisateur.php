@@ -36,6 +36,16 @@
         }
     }
     
+
+    function countUsers() {
+        $select = "SELECT count(*) as usersCount FROM utilisateur";
+        global $conn;
+        $result = mysqli_query($conn, $select);
+        $arrAssoc = mysqli_fetch_assoc($result);
+        
+        return $arrAssoc['usersCount'];
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -82,7 +92,7 @@
             <div class="header-mobile__bar">
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
-                        <a class="logo" href="Utilisateur.html">
+                        <a class="logo" href="Utilisateur.php">
                             <img src="images/icon/logo.png" alt="CoolAdmin" />
                         </a>
                         <button class="hamburger hamburger--slider" type="button">
@@ -97,19 +107,19 @@
                 <div class="container-fluid">
                     <ul class="navbar-mobile__list list-unstyled">
                         <li>
-                            <a href="Utilisateur.html">
+                            <a href="Utilisateur.php">
                                 <i class="fas fa-chart-bar"></i>UTILISATEUR</a>
                         </li>
                         <li>
-                            <a href="ressources.html">
+                            <a href="ressources.php">
                                 <i class="fas fa-table"></i>RESSOURCES</a>
                         </li>
                         <li>
-                            <a href="categories.htm">
+                            <a href="categories.php">
                                 <i class="far fa-check-square"></i>CATEGORIES</a>
                         </li>
                         <li>
-                            <a href="subcategories.html">
+                            <a href="subcategories.php">
                                 <i class="fas fa-calendar-alt"></i>SUBCATEGORIES</a>
                         </li>
                     </ul>
@@ -129,19 +139,19 @@
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
                         <li>
-                            <a href="Utilisateur.html">
+                            <a href="Utilisateur.php">
                                 <i class="fas fa-chart-bar"></i>UTILISATEUR</a>
                         </li>
                         <li class="active">
-                            <a href="ressources.html">
+                            <a href="ressources.php">
                                 <i class="fas fa-table"></i>RESSOURCES</a>
                         </li>
                         <li>
-                            <a href="categories.htm">
+                            <a href="categories.php">
                                 <i class="far fa-check-square"></i>CATEGORIES</a>
                         </li>
                         <li>
-                            <a href="subcategories.html">
+                            <a href="subcategories.php">
                                 <i class="fas fa-calendar-alt"></i>SUBCATEGORIS</a>
                         </li>
                     </ul>
@@ -349,7 +359,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <!-- DATA TABLE -->
-                                <h3 class="title-5 m-b-35">USERS(50)</h3>
+                                <h3 class="title-5 m-b-35">USERS(<?= countUsers(); ?>)</h3>
                                 <div class="table-data__tool">
                                     <div class="table-data__tool-left">
                                         <div class="rs-select2--light rs-select2--md">
@@ -472,7 +482,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">New user</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -509,7 +519,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">New user</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
