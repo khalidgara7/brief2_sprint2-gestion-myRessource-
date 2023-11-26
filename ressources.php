@@ -1,30 +1,25 @@
 <?php
     require 'database.php';
     require 'services/user_service.php';
+    require 'services/resource_serve.php';
 
 // insertion ou bien l'ajout des ressource .
     if(isset($_POST["ajouter_ressource"])){
-        $titel = $_POST['title'];
-        $desc = $_POST['description'];
-        $user_id = $_POST['user_id'];
-        $query = "INSERT INTO resources (`title`, `description`, `user_id`)
-                              values ('$titel', '$desc', '$user_id')";
-        $result = mysqli_query($conn,$query);
-        if($result){
-            echo "ressource is inserted successfuly";
-        }else {
-            die('connection.failed :' .$conn->connect_error);
-        }                       
+        add_ressource();
     }
+    // update resource ...
+    if(isset($_POST["update_resource"])){
+        update_resource();
+    }
+
 // la suppression d'un ressources
+// if delete_resource exist in the URL
+if (isset($_GET['delete_resource']))
+    delete_resource($_GET['delete_resource']);
 
-    if(isset($_GET['resource_id'])){
-        $id = $_GET['resource_id'];
-        $sql = "DELETE from resources WHERE resource_id = $id";
-        $result = mysqli_query($conn,$sql);
-    }
+// get all users
+$users = get_all_users();
 
-    
 ?>
 
 <!DOCTYPE html>
@@ -338,7 +333,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <!-- DATA TABLE -->
-                                <h3 class="title-5 m-b-35">Ressours(50)</h3>
+                                <h3 class="title-5 m-b-35">Resources(<?=CountRes()?>)</h3>
                                 <div class="table-data__tool">
                                     <div class="table-data__tool-left">
                                         <div class="rs-select2--light rs-select2--md">
@@ -418,7 +413,7 @@
                                         data-bs-target="#exampleModal<?=$id?>" class="item" data-toggle="tooltip" data-placement="top" title="Edit">
                                                             <i class="zmdi zmdi-edit"></i>
                                                         </button>
-                                                        <a class="item"  href="Utilisateur.php?id_user=<?=$id?>"><i class="zmdi zmdi-delete"></i></a>
+                                                        <a class="item"  href=" ressources.php?delete_resource=<?=$id?>"><i class="zmdi zmdi-delete"></i></a>
                                                         
                                                         <button class="item" data-toggle="tooltip" data-placement="top" title="More">
                                                             <i class="zmdi zmdi-more"></i>
@@ -454,33 +449,49 @@
     $result = mysqli_query($conn,$select);
     if($result){
         while($row = mysqli_fetch_assoc($result)){
-            $id = $row['jouter_ressource']; 
+            $id = $row['resource_id'];
     ?>
 <div class="modal fade" id="exampleModal<?=$id?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">New resource</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Update resource</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form method="post">
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">Titel:</label>
-            <input type="text" name="titel" class="form-control" value="<?=$row['title']?>" id="recipient-name">
+            <input type="text" name="title" class="form-control" value="<?=$row['title']?>" id="recipient-name">
           </div>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">DEscription:</label>
+            <label for="recipient-name" class="col-form-label">Description:</label>
             <input type="text" name="description" class="form-control" value="<?=$row['description']?>" id="recipient-name">
           </div>
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">User_id:</label>
-            <input type="text" name ="user_id" class="form-control" value="<?=$row['user_id']?>" id="recipient-name">
+              <select class="form-control" name="user_id" id="recipient-name" require>
+                  <?php
+                  foreach($users as $user){
+                          if($user['user_id'] == $row['user_id']) {
+                          ?>
+                            <option value="<?=$row['user_id']?>" selected> <?php echo $user['nom'] . ' ' . $user['prenom'] ?></option>
+                          <?php
+                          }else{
+                          ?>
+                            <option value="<?=$user['user_id'] ?>"> <?php echo $user['nom'] . ' ' . $user['prenom'] ?> </option>
+                          <?php
+                          }
+                  }
+                  ?>
+              </select>
           </div>
-          <input type="hidden" value="<?=$id?>" name ="id" >
+            
+          <input type="hidden" value="<?=$id?>" name ="resource_id" >
+            
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" name ="update_user" class="btn btn-primary">Ajouter</button>
+            <button type="submit" name ="update_resource" class="btn btn-primary">Update</button>
           </div>
         </form>
       </div>
@@ -513,10 +524,8 @@
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">User:</label>
             <select class="form-control" name="user_id" id="recipient-name" require>
-            <option value=null selected> Select user</option>
+                <option value=null selected> Select user</option>
                 <?php
-                    $users = get_all_users();
-
                     foreach($users as $user){
                 ?>
                         <option value="<?=$user['user_id'] ?>"> <?php echo $user['nom'] . ' ' . $user['prenom'] ?> </option>
