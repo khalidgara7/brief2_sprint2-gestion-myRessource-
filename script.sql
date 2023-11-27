@@ -1,10 +1,9 @@
--- la supression de la base de donnée :
-drop database if EXISTS gestion_myressource;
+
 -- creation de base de donnée :
-create database if not exists gestion_myressource;
+
 
 -- pour utiliser la base de donnée en utilise la requete use name de base donnée :
-use gestion_myressource;
+
 
 -- la craetaion des tables 
 -- creation de la table utilisateur :

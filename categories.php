@@ -1,6 +1,6 @@
 <?php
 require 'database.php';
-// insertion ou bien l'ajout des ressource .
+// insertion ou bien l'ajout des categoriers .
 if(isset($_POST["ajouter_categories"])){
     global $conn;
     $name = $_POST['name'];
@@ -8,7 +8,7 @@ if(isset($_POST["ajouter_categories"])){
                                   values ('$name')";
     $result = mysqli_query($conn,$query);
     if($result){
-        echo "categories is inserted successfuly";
+        echo "categories is inserted successfully";
     }else {
         die('connection.failed :' .mysqli_connect_error());
     }
@@ -17,6 +17,27 @@ if(isset($_GET["id_catego"])){
     $id=$_GET["id_catego"];
     $sql="DELETE from categories where category_id=$id";
     $result = mysqli_query($conn, $sql);
+}
+
+if (isset($_POST["update_categories"])){
+    $id = $_POST['categories_id'];
+    $name = $_POST['name'];
+    $insert = "UPDATE  categories set name = '$name' where category_id = '$id'";
+    $result = mysqli_query($conn, $insert);
+    if($result){
+        echo "data is inserted successfuly";
+    }else{
+        die("Connection failed: " . mysqli_connect_error());
+    }
+}
+
+function countCategories() {
+    $select = "SELECT count(*) as usersCategorie FROM categories";
+    global $conn;
+    $result = mysqli_query($conn, $select);
+    $arrAssoc = mysqli_fetch_assoc($result);
+
+    return $arrAssoc['usersCategorie'];
 }
 ?>
 <!DOCTYPE html>
@@ -330,7 +351,7 @@ if(isset($_GET["id_catego"])){
                     <div class="row">
                         <div class="col-md-12">
                             <!-- DATA TABLE -->
-                            <h3 class="title-5 m-b-35">categories(0)</h3>
+                            <h3 class="title-5 m-b-35">categories(<?= countCategories(); ?>)</h3>
                             <div class="table-data__tool">
                                 <div class="table-data__tool-left">
                                     <div class="rs-select2--light rs-select2--md">
@@ -404,7 +425,7 @@ if(isset($_GET["id_catego"])){
                                                                 data-bs-target="#exampleModal<?=$id?>" class="item" data-toggle="tooltip" data-placement="top" title="Edit">
                                                             <i class="zmdi zmdi-edit"></i>
                                                         </button>
-                                                        <a class="item"  href=" categories.php?id_catego"><i class="zmdi zmdi-delete"></i></a>
+                                                        <a class="item"  href=" categories.php?id_catego=<?=$id?>"><i class="zmdi zmdi-delete"></i></a>
 
                                                         <button class="item" data-toggle="tooltip" data-placement="top" title="More">
                                                             <i class="zmdi zmdi-more"></i>
@@ -460,7 +481,7 @@ if($result){
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" name ="update_resource" class="btn btn-primary">Update</button>
+                                <button type="submit" name ="update_categories" class="btn btn-primary">Update</button>
                             </div>
                         </form>
                     </div>
